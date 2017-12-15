@@ -1,0 +1,30 @@
+- hosts: all
+  remote_user: ec2-user
+  sudo: yes
+  vars:
+    download_url: http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz
+    download_folder: /opt
+    java_name: "{{download_folder}}/jdk1.8.0_151"
+    java_archive: "{{download_folder}}/jdk-8u151-linux-x64.tar.gz"
+
+
+  tasks:
+
+  - name: Create directory structure
+    command: mkdir -p {{download_folder}}
+    command: mkdir -p {{java_name}} 
+
+  - name: Download Java
+    get_url: url={{download_url}} dest={{java_name}}
+
+  - name: Unpack archive
+    command: "tar -zxf {{java_archive}} -C {{download_folder}} creates={{java_name}}"
+
+  - name: Fix ownership
+    file: state=directory path={{java_name}} owner=root group=root recurse=yes
+
+  - name: Make Java available for system
+    command: 'alternatives --install "/usr/bin/java" "java" "{{java_name}}/bin/java" 2000'
+
+  - name: Clean up
+    file: state=absent path={{java_archive}}
