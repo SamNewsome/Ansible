@@ -1,0 +1,13 @@
+- hosts: all
+  remote_user: ubuntu
+  sudo: yes
+
+  tasks:
+
+  - name: Update package index
+    command: apt-get update
+
+  - name: Install java
+    apt:
+      name: default-jdk
+      state: present

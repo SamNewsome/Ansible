@@ -1,0 +1,31 @@
+- hosts: all
+  remote_user: ubuntu
+  sudo: yes
+  vars:
+ 
+    download_key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
+  tasks:
+  
+  - apt_key:
+      url: '{{download_key}}'
+      state: present
+
+  - name: echo
+      command: sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+
+  - name: update
+    command: apt-get update
+
+  - name: Install jenkins
+    apt:
+      name: jenkins
+      state: present
+
+  
+  - name: Login as the Jenkins user
+    command: su jenkins -s /bin/bash
+    command: ssh-keygen
+
+  - name: Start jenkins
+    service: name=jenkins state=started  

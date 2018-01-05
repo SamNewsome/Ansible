@@ -1,0 +1,20 @@
+- hosts: all
+  remote_user: ubuntu
+  sudo: yes
+
+  tasks:
+  - name: Install git
+    apt:
+      name: git
+      state: present
+  
+  - name: Setup default git configuration
+    git_config:
+      name: "user.name"
+      scope: global
+      value: "SamNewsome"
+
+    git_config:
+      name: "user.email"
+      scope: global
+      value: "samuel.newsome@qa.com" 
